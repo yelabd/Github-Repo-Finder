@@ -8,17 +8,23 @@
 
 import UIKit
 import MBProgressHUD
+import AFNetworking
 
 // Main ViewController
-class RepoResultsViewController: UIViewController {
+class RepoResultsViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
 
     var searchBar: UISearchBar!
     var searchSettings = GithubRepoSearchSettings()
 
-    var repos: [GithubRepo]!
+    @IBOutlet weak var tableView: UITableView!
+    var repos: [GithubRepo] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 150
 
         // Initialize the UISearchBar
         searchBar = UISearchBar()
@@ -41,9 +47,12 @@ class RepoResultsViewController: UIViewController {
         GithubRepo.fetchRepos(searchSettings, successCallback: { (newRepos) -> Void in
 
             // Print the returned repositories to the output window
+            self.repos = newRepos
+            self.tableView.reloadData()
             for repo in newRepos {
                 print(repo)
-            }   
+//                self.repos.append(repo)
+            }
 
             MBProgressHUD.hide(for: self.view, animated: true)
             }, error: { (error) -> Void in
@@ -75,4 +84,28 @@ extension RepoResultsViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         doSearch()
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+       return repos.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RepoCell", for: indexPath) as! RepoCell
+        
+        cell.descriptionLabel.text = repos[indexPath.row].repoDescription!
+        let url = URL(string: repos[indexPath.row].ownerAvatarURL!)
+        cell.avatarView.setImageWith(url!)
+        cell.forkLabel.text = String(repos[indexPath.row].forks!)
+        cell.starLabel.text = String(repos[indexPath.row].stars!)
+        cell.titleLabel.text = repos[indexPath.row].name!
+        cell.ownerLabel.text = repos[indexPath.row].ownerHandle!
+
+        
+        
+        
+        return cell
+    }
+
 }
