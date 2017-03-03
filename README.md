@@ -26,6 +26,8 @@ Here's a walkthrough of implemented user stories:
 
 ![alt tag](https://raw.githubusercontent.com/yelabd/Github-Repo-Finder/master/demo.gif)
 
+![alt tag](https://raw.githubusercontent.com/yelabd/Github-Repo-Finder/master/demo2.gif)
+
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
